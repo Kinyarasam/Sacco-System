@@ -3,11 +3,12 @@
 """
 import typing
 from models.base_model import Base
+from models.user import User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 
-classes: typing.Dict = {}
+classes: typing.Dict = {"User": User}
 
 
 class DBStorage:
