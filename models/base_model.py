@@ -30,17 +30,17 @@ class BaseModel:
                 self.created_at = datetime.datetime.strptime(
                     kwargs["created_at"], time)
             else:
-                self.created_at = datetime.datetime.utcnow()
+                self.created_at = datetime.datetime.now(datetime.UTC)
             if kwargs.get("updated_at", None) and type(self.updated_at) is str:
                 self.updated_at = datetime.datetime.strptime(
                     kwargs["updated_at"], time)
             else:
-                self.updated_at = datetime.datetime.utcnow()
+                self.updated_at = datetime.datetime.now(datetime.UTC)
             if kwargs.get("id", None) is None:
                 self.id = str(uuid.uuid4())
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.datetime.utcnow()
+            self.created_at = datetime.datetime.now(datetime.UTC)
             self.updated_at = self.created_at
 
     def __str__(self) -> str:
@@ -52,7 +52,7 @@ class BaseModel:
     def save(self):
         """ Updates the attribute 'updated_at' with the current datetime
         """
-        self.updated_at = datetime.datetime.utcnow()
+        self.updated_at = datetime.datetime.now(datetime.UTC)
         models.storage.new(self)
         models.storage.save()
 
