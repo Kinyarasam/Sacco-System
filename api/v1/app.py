@@ -4,8 +4,10 @@
 from models import storage
 from flask import Flask, make_response, jsonify
 from api.v1.views import app_views
-from os import environ
 from flask_cors import CORS
+from flasgger import Swagger
+from flasgger.utils import swag_from
+
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
@@ -29,3 +31,22 @@ def not_found(error):
             description: a resource was not found
     """
     return make_response(jsonify({"error": "Not found"}), 404)
+
+
+@app.errorhandler(400)
+def missing(error):
+    """ 400 Error
+    ---
+    responses:
+        400:
+            description: a parameter was not found
+    """
+    return make_response(jsonify({"error": "{}".format(error)}), 400)
+
+
+app.config['SWAGGER'] = {
+    'title': 'Sacco System Restful API',
+    'uiversion': 3
+}
+
+Swagger(app)
