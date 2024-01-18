@@ -21,14 +21,14 @@ class DBStorage:
         """ Initialize the DBStorage.
         """
         connection_string = {
-            'dev': 'mysql+mysqlconnector://sacco_test:sacco_test_pwd@localhost:3306',
+            'dev': 'mysql+mysqlconnector://sacco_test:sacco_test_pwd@localhost:3306/sacco_test_db',
             'test': 'sqlite:///db.sqlite'
         }
 
         self.__engine = create_engine(connection_string.get('dev'))
 
         # If a valid test
-        Base.meta.drop_all(self.engine)
+        Base.metadata.drop_all(self.__engine)
 
     def all(self, cls: typing.TypeVar = None) -> typing.Dict:
         """ Retrieve a list of records in storage
