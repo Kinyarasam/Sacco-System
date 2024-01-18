@@ -4,3 +4,4 @@ mysql-connector-python
 mysqlclient
 SQLAlchemy
 pep8
+flasgger
