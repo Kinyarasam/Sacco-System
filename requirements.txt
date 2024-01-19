@@ -5,3 +5,4 @@ mysqlclient
 SQLAlchemy
 pep8
 flasgger
+redis
