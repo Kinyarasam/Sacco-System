@@ -4,6 +4,7 @@
 
 import sqlalchemy
 from models.base_model import BaseModel, Base
+from sqlalchemy.orm import relationship
 
 
 class UserSession(BaseModel, Base):
@@ -13,7 +14,7 @@ class UserSession(BaseModel, Base):
 
     user_id = sqlalchemy.Column(sqlalchemy.String(
         60), sqlalchemy.ForeignKey('users.id'), nullable=False)
-    session_id = sqlalchemy.Column(sqlalchemy.String(
-        60), sqlalchemy.ForeignKey('users.id'), nullable=False)
+    # session_id = sqlalchemy.Column(sqlalchemy.String(
+    #     60), sqlalchemy.ForeignKey('session.id'), nullable=False)
     duration = sqlalchemy.Column(sqlalchemy.String(60))
     reset_token = sqlalchemy.Column(sqlalchemy.String(60))

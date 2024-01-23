@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """ base_model module
 """
-import sqlalchemy
-import uuid
 import datetime
+import sqlalchemy
 import models
+import uuid
 from sqlalchemy.ext.declarative import declarative_base
 
-time = "%Y-%m-%dT%H:%M:%S.%f"
 
+time = "%Y-%m-%dT%H:%M:%S.%f"
 Base = declarative_base()
 
 
@@ -17,7 +17,8 @@ class BaseModel:
     """
     id = sqlalchemy.Column(sqlalchemy.String(60), primary_key=True)
     created_at = sqlalchemy.Column(sqlalchemy.DateTime)
-    updated_at = sqlalchemy.Column(sqlalchemy.DateTime)
+    updated_at = sqlalchemy.Column(
+        sqlalchemy.DateTime, default=datetime.datetime.now(datetime.UTC))
 
     def __init__(self, *args, **kwargs) -> None:
         """ Initialization of the Base Model
