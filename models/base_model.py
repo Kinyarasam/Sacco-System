@@ -77,3 +77,12 @@ class BaseModel:
         """ delete the current instance from the storage
         """
         models.storage.delete(self)
+
+    @classmethod
+    def find(cls, *args, **kwargs):
+        """ get a record based on the parameters passed.
+        """
+
+        record = models.storage.get(cls, **kwargs)
+        return record
+        

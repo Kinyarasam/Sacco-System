@@ -73,6 +73,17 @@ def unauthorized(error):
     return make_response(jsonify({"error": "Unauthorized"}), 401)
 
 
+@app.errorhandler(405)
+def notAllowed(error):
+    """ 405 Error
+    ---
+    responses:
+        405:
+            description: Method Not Allowed
+    """
+    return make_response(jsonify({"error": "{}".format(str(error))}), 405)
+
+
 @app.errorhandler(400)
 def missing(error):
     """ 400 Error
@@ -81,7 +92,18 @@ def missing(error):
         400:
             description: a parameter was not found
     """
-    return make_response(jsonify({"error": "{}".format(error)}), 400)
+    return make_response(jsonify({"error": str(error)}), 400)
+
+
+@app.errorhandler(415)
+def invalid_format(error):
+    """ 415 Error
+    ---
+    responses:
+        415:
+            description: invalid format.
+    """
+    return make_response(jsonify({"error": str(error)}), 415)
 
 
 app.config['SWAGGER'] = {

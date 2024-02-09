@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
+"""Flask app server
+"""
+
 from os import environ
 from api.v1.app import app
+
 
 if __name__ == "__main__":
     """ Main Function

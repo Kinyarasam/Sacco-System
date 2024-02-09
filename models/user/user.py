@@ -2,6 +2,7 @@
 """ holds class user """
 
 
+import models
 from typing import Any
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
@@ -20,8 +21,8 @@ class User(BaseModel, Base):
     last_name = Column(String(128), nullable=True)
 
     sessions = relationship('UserSession',
-                        backref="users",
-                        cascade="all, delete, delete-orphan")
+                            backref="users",
+                            cascade="all, delete, delete-orphan")
 
     def __init__(self, *args, **kwargs) -> None:
         """ initializes user
@@ -34,3 +35,14 @@ class User(BaseModel, Base):
         if name == "password":
             value = md5(value.encode()).hexdigest()
         return super().__setattr__(name, value)
+
+    @classmethod
+    def find(cls, *args, **kwargs):
+        """ get a record based on the parameters passed.
+        """
+        if "password" in kwargs: 
+            kwargs["password"] = md5(kwargs["password"].encode()).hexdigest()
+
+        record = models.storage.get(cls, **kwargs)
+
+        return record

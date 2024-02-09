@@ -1,0 +1,13 @@
+registers a user.
+---
+tags:
+  - Authentication
+
+responses:
+  201:
+    description: request executed successfully
+    schema:
+      type: object
+      items:
+        properties:
+          

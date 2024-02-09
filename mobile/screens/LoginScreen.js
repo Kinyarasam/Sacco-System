@@ -18,9 +18,17 @@ const LoginScreen = () => {
     fetchData();
   }, [])
 
-  const handleLogin = () => {
-    console.log(email, password);
-    navigation.navigate('Home')
+  const handleLogin = async () => {
+    const userData = {
+      email: email,
+      password: password
+    }
+
+    try {
+      auth = UserService.loginUser(userData);
+      
+      navigation.navigate('Home')
+    } catch (error) {}
   };
 
   const handleRegistration = () => {

@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 import UserService from '../services/userServices';
+import Sessions from '../utils/session_storage';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -15,16 +16,23 @@ const RegisterScreen = () => {
   }
 
   const handleRegister = async () => {
-    try {
-      const userData = {
-        first_name: firstName,
-        lastName: lastName,
-        email: email,
-        password: password
-      }
+    const userData = {
+      first_name: firstName,
+      lastName: lastName,
+      email: email,
+      password: password
+    }
 
-      const response = await UserService.createUser(userData);
-      if (response !== null) navigation.navigate('Login');
+    /**
+     * Data validations
+     */
+      
+    try {
+      const response = await UserService.registerUser(userData);
+      
+      if (response === null) navigation.navigate('Login');
+      Sessions.set(response.user_id, response.token);
+      navigation.navigate('Home');
       /**
        * Raise Some error notification
        */
