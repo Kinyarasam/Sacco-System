@@ -1,0 +1,64 @@
+Posts a new User
+---
+tags:
+  - Users
+parameters:
+  - name: New user request
+    in: body
+    description: Email and password is required
+    required: true
+    requires:
+      - email:
+      - password:
+      - first_name:
+      - last_name:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    schema:
+      type: "object"
+      properties:
+        email:
+          required: true
+          type: string
+          description: "User's email"
+        password:
+          required: true
+          type: string
+          description: "User's password"
+        first_name:
+          type: string
+          description: "User's first name"
+        last_name:
+          type: string
+          description: "User's last name"
+
+responses:
+  400:
+    description: Missing email/password or not a JSON
+  201:
+    description: successfully created user
+    schema:
+      properties:
+        __class__:
+          type: string
+        created_at:
+          type: string
+          description: time of creation of the instance
+        updated_at:
+          type: string
+          description: time of last update of the instance
+        id:
+          type: string
+          description: the uuid of the instance
+        first_name:
+          type: string
+          description: the first name of the instance
+        last_name:
+          type: string
+          description: the last name of the instance
+        email:
+          type: string
+          description: the email of the instance

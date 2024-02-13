@@ -29,7 +29,7 @@ class DBStorage:
         self.__engine = create_engine(connection_string.get('dev'))
 
         # If a valid test
-        Base.metadata.drop_all(self.__engine)
+        # Base.metadata.drop_all(self.__engine)
 
     def all(self, cls: typing.TypeVar = None) -> typing.Dict:
         """ Retrieve a list of records in storage
@@ -81,13 +81,13 @@ class DBStorage:
         """
         self.__session.remove()
 
-    def get(self, cls, **kwargs) -> typing.Any:
+    def get(self, cls, *args, **kwargs) -> typing.Any:
         """ Returns the object based on the class name and its ID, or
         None if not found
         """
         if cls not in classes.values():
             return None
-        
+
         return self.__session.query(cls).filter_by(**kwargs).first()
 
         # all_cls = self.all(cls)

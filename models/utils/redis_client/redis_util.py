@@ -24,11 +24,11 @@ class RedisClient:
 
         return self._client.get(key)
 
-    def set(self, key, val, duration):
+    def set(self, key, val, duration=1):
         if key is None:
             return
 
-        return self._client.setex(key, duration*60, val)
+        return self._client.setex(key, duration*60*24, val)
 
     def delete(self, key=None):
         if key is not None:

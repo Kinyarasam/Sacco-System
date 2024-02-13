@@ -85,4 +85,3 @@ class BaseModel:
 
         record = models.storage.get(cls, **kwargs)
         return record
-        

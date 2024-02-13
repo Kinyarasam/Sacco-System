@@ -6,7 +6,7 @@ from flask import Flask, make_response, jsonify, abort, request
 from api.v1.views import app_views
 from api.v1.views import auth_views
 from flask_cors import CORS
-from flasgger import Swagger
+from flasgger import Swagger, NO_SANITIZER
 from flasgger.utils import swag_from
 
 
@@ -108,7 +108,31 @@ def invalid_format(error):
 
 app.config['SWAGGER'] = {
     'title': 'Sacco System Restful API',
-    'uiversion': 3
+    'uiversion': 2,
+    # 'swagger_url': '/docs',
+}
+# "specs": [
+#     {
+#         "version": "0.0.1",
+#         "title": "Api v1",
+#         "endpoint": 'v1_spec',
+#         "route": '/api/v1/views/documentation/*'
+#     }
+# ]
+
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec_1",
+            "route": "/apispec_1.json",
+            "rule_filter": lambda rule: True,
+            "model_filter": lambda rule: True,
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": '/'
 }
 
-Swagger(app)
+Swagger(app, config=swagger_config)

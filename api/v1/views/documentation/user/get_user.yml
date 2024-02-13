@@ -1,0 +1,36 @@
+get a specific user based on the user_id
+---
+tags:
+  - Users
+parameters:
+  - name: user_id
+    in: path
+    type: string
+    required: true
+    description: The unique id of the user
+responses:
+  200:
+    description: Successful request
+    schema:
+      properties:
+        __class__:
+          type: string
+        created_at:
+          type: string
+          description: time of creation of the instance
+        updated_at:
+          type: string
+          description: time of last update of the instance
+        id:
+          type: string
+          description: the uuid of the instance
+        first_name:
+          type: string
+          description: the first name of the instance
+        last_name:
+          type: string
+          description: the last name of the instance
+        email:
+          type: string
+          description: the email of the instance
+        
