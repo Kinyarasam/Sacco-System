@@ -8,6 +8,10 @@ from api.v1.views import auth_views
 from flask_cors import CORS
 from flasgger import Swagger, NO_SANITIZER
 from flasgger.utils import swag_from
+from api.v1.auth.auth import Auth
+from api.v1.auth.basic_auth import BasicAuth
+from api.v1.auth.session_auth import SessionAuth
+from os import environ
 
 
 app = Flask(__name__)
@@ -17,31 +21,41 @@ app.register_blueprint(auth_views)
 
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
-auth = None
-AUTH_TYPE = ''  # Get the user auth level
-if AUTH_TYPE == "auth":
-    from api.v1.auth.auth import Auth
-    auth = Auth()
 
 
 @app.before_request
 def before_request():
     """Filter each request before it's handled by the proper route
     """
-    if auth is not None:
-        setattr(request, "current_user", auth.current_user(request))
-        excluded = [
-            'api/v1/status/',
-            'api/v1/unauthorized/',
-            'api/v1/forbidden/',
-            'api/v1/auth_session/*',
-        ]
-        if auth.require_auth(request.path, excluded):
-            cookie = auth.session_cookie(request)
-            if auth.authorization_header(request) is None and cookie is None:
-                abort(401, description="Unauthorized")
-            if auth.current_user(request) is None:
-                abort(403, description="Forbidden")
+    if request.headers.get("Authorization").lower().startswith("basic "):
+        AUTH_TYPE = "basic_auth"
+    else:
+        AUTH_TYPE = request.headers.get("AUTH-TYPE")
+
+    access_level = {
+        "auth": Auth(),
+        "basic_auth": BasicAuth(),
+        "session_auth": SessionAuth(),
+    }
+
+    auth = access_level.get(AUTH_TYPE)
+    setattr(request, "auth", auth)
+
+    # if auth is not None:
+    setattr(request, "current_user", auth.current_user(request))
+    excluded = [
+        '/api/v1/status',
+        '/api/v1/unauthorized/',
+        '/api/v1/forbidden/',
+        '/api/v1/auth_session/login',
+        '/docs',
+    ]
+    if auth.require_auth(request.path, excluded):
+        cookie = auth.session_cookie(request)
+        if auth.authorization_header(request) is None and cookie is None:
+            abort(401, description="Unauthorized")
+        if auth.current_user(request) is None:
+            abort(403, description="Forbidden")
 
 
 @app.teardown_appcontext
@@ -109,7 +123,7 @@ def invalid_format(error):
 app.config['SWAGGER'] = {
     'title': 'Sacco System Restful API',
     'uiversion': 2,
-    # 'swagger_url': '/docs',
+    'swagger_url': '/docs',
 }
 # "specs": [
 #     {
@@ -136,3 +150,15 @@ swagger_config = {
 }
 
 Swagger(app, config=swagger_config)
+
+
+if __name__ == "__main__":
+    """ Main Function
+    """
+    host = environ.get('SACCO_API_HOST')
+    port = environ.get('SACCO_API_PORT')
+
+    host = '0.0.0.0' if not host else host
+    port = '5000' if not port else port
+    app.run(host=host, port=port,
+            threaded=True, debug=True)

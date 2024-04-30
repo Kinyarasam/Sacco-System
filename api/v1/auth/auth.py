@@ -4,6 +4,7 @@
 
 import os
 import typing
+from models.user import User
 
 
 class Auth:
@@ -22,21 +23,19 @@ class Auth:
         """
         if path is None:
             return True
-
-        if excluded_paths is None or excluded_paths == []:
+        elif excluded_paths is None or excluded_paths == []:
             return True
-
-        if path in excluded_paths:
+        elif path in excluded_paths:
             return False
-
-        for i in excluded_paths:
-            if i.startswith(path) or path.startswith(i):
-                return False
-
-            if i[-1] == '*':
-                if path.startswith(i[:-1]):
+        else:
+            for i in excluded_paths:
+                if i.startswith(path):
                     return False
-
+                if path.startswith(i):
+                    return False
+                if i[-1] == '*':
+                    if path.startswith(i[:-1]):
+                        return False
         return True
 
     def authorization_header(self, request=None) -> str:
@@ -50,7 +49,7 @@ class Auth:
 
         return header
 
-    def current_user(self, request=None) -> typing.TypeVar('User'):
+    def current_user(self, request=None) -> User:
         """ Returns a User instance from information from a request object
         """
         return None
@@ -66,4 +65,5 @@ class Auth:
             return None
 
         session_name = os.getenv('SESSION_NAME')
-        return request.cookies.get(session_name)
+        cookie = request.cookies.get(session_name)
+        return cookie

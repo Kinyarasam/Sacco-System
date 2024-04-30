@@ -4,11 +4,14 @@
 """
 from models.user_session import UserSession
 from api.v1.views import auth_views
+from api.v1.auth import session_auth
 from flasgger.utils import swag_from
 from flask import request, make_response, jsonify, abort, redirect, render_template, url_for
 from models import storage
 from models.user import User
 from models.utils.redis_client import redisClient
+from base64 import b64decode
+
 
 
 @auth_views.route('/', methods=['GET'], strict_slashes=False)
@@ -31,29 +34,19 @@ def render_login():
 def handle_login():
     """ Authenticate a user.
     """
-    if "application/json" not in request.content_type:
-        abort(400, description="Missing required parameters")
+    auth = request.auth
+    user = auth.current_user(request)
+    if not user:
+        abort(404)
 
-    userData = request.get_json()
+    auth = session_auth.SessionAuth()
+    session_id = auth.create_session(user.id)
 
-    if "email" not in userData.keys():
-        abort(400, description="Missing required parameters <email>")
-
-    if "password" not in userData.keys():
-        abort(400, description="Missing required parameters <password>")
-
-    user = User.find(**userData)
-
-    if user is None:
-        abort(401, description="Unauthorized")
-
-    # generate a token
-    session = UserSession(user_id=user.id)
-
-    key = 'auth_{}'.format(session.id)
-    redisClient.set(key, user.id, 60)
-
-    return make_response(jsonify({"token": session.id}), 200)
+    resp = {}
+    resp["token"] = session_id
+    resp["user"] = user.to_dict()
+    return make_response(jsonify(resp), 200)
+    # return make_response(jsonify({"user_id": user.id, "token": session.id}), 200)
 
 
 @auth_views.route('/register', methods=['POST'], strict_slashes=False)
